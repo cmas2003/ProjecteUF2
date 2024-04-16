@@ -12,3 +12,7 @@ Entrega 16 Abril
     - Desarrollo de resultados
     - Desarrollo volver a jugar
     - Implementación de tiempo en preguntas
+
+    PD:
+El hugo es un inutil que no hace nada
+    
