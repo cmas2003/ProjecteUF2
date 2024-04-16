@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #question-container {
+            margin-top: 20px;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .option {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+        #timer {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome-screen">
+        <h1>Benvingut al Trivial</h1>
+        <p>Introdueix el teu nom per començar a jugar:</p>
+        <input type="text" id="player-name">
+        <button class="button" onclick="startGame()">Començar a jugar</button>
+    </div>
+
+    <div id="question-screen">
+        <h1>Hola <span id="player"></span>, selecciona el tipus de pregunta:</h1>
+        <button class="button" onclick="selectCategory('A')">Jugar amb preguntes de tipus A (Esport)</button>
+        <button class="button" onclick="selectCategory('B')">Jugar amb preguntes de tipus B (Menjar)</button>
+    </div>
+
+    <div id="question-container">
+        <h1 id="question">Pregunta</h1>
+        <div id="options"></div> <!-- Aquí se mostrarán las opciones de respuesta -->
+        <div id="timer"></div>
+    </div>
+
+    <div id="result-screen">
+        <h1>Resultats</h1>
+        <p id="score"></p>
+        <button class="button" onclick="restartGame()">Tornar a jugar</button>
+        <button class="button" onclick="endGame()">Sortir</button>
+    </div>
+
+    <script>
+        var playerName;
+        var currentQuestionIndex = 0;
+        var score = 0;
+        var timer;
+        var timeLimit = 10; // Límit de temps en segons per respondre a cada pregunta
+
+        // Array de preguntes
+        var questions = [
+            {
+                question: "¿Qui va guanyar la Copa del Món de futbol el 2018?",
+                options: ["França", "Alemanya", "Brasil", "Espanya"],
+                answer: "França"
+            },
+            {
+                question: "¿Quin és el plat nacional d'Itàlia?",
+                options: ["Paella", "Sushi", "Pizza", "Hamburguesa"],
+                answer: "Pizza"
+            }
+            // Pots afegir més preguntes aquí
+        ];
+
+        function startGame() {
+            playerName = document.getElementById("player-name").value;
+            if (playerName.trim() !== "") {
+                document.getElementById("player").textContent = playerName;
+                document.getElementById("welcome-screen").style.display = "none";
+                document.getElementById("question-screen").style.display = "block";
+            } else {
+                alert("Si us plau, introdueix el teu nom per començar a jugar.");
+            }
+        }
+
+        function selectCategory(category) {
+            document.getElementById("question-screen").style.display = "none";
+            document.getElementById("question-container").style.display = "block";
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            var currentQuestion = questions[currentQuestionIndex];
+            document.getElementById("question").textContent = currentQuestion.question;
+            var optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = ""; // Limpiar el contenedor de opciones antes de agregar las nuevas
+            currentQuestion.options.forEach(function(option) {
+                var optionButton = document.createElement("button"); // Cambiado div a button
+                optionButton.textContent = option;
+                optionButton.className = "option";
+                optionButton.onclick = function() {
+                    checkAnswer(option);
+                };
+                optionsContainer.appendChild(optionButton);
+            });
+            startTimer();
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(timer);
+            var correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function startTimer() {
+            var timeLeft = timeLimit;
+            updateTimerDisplay(timeLeft);
+            timer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.length) {
+                        displayQuestion();
+                    } else {
+                        showResult();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(timeLeft) {
+            document.getElementById("timer").textContent = "Temps restant: " + timeLeft + " segons";
+        }
+
+        function showResult() {
+            document.getElementById("question-container").style.display = "none";
+            document.getElementById("result-screen").style.display = "block";
+            document.getElementById("score").textContent = "Puntuació: " + score + "/" + questions.length;
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("result-screen").style.display = "none";
+            document.getElementById("question-container").style.display = "block";
+            displayQuestion();
+        }
+
+        function endGame() {
+            alert("Gràcies per jugar. Fins la propera!");
+            // Aquí pots afegir més lògica si cal, com tornar a la pantalla d'inici, per exemple.
+        }
+    </script>
+</body>
+</html>
