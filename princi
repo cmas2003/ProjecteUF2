@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div id="welcome-screen">
+        <h1>Benvingut al Trivial</h1>
+        <p>Introdueix el teu nom per començar a jugar:</p>
+        <input type="text" id="player-name">
+        <button class="button" onclick="nom()">Començar a jugar</button>
+    </div>
+
+    <div id="question-screen" style="display: none">
+        <h1>Hola <span id="player"></span>, selecciona el tipus de pregunta:</h1>
+        <button class="button" onclick="selectCategory('A')">Jugar amb preguntes de tipus A (Esport)</button>
+        <button class="button" onclick="selectCategory('B')">Jugar amb preguntes de tipus B (Menjar)</button>
+    </div>
+
+    <script>
+        function nom(){
+           let nom = document.getElementById("player-name").value
+           document.getElementById("player").innerHTML = nom;
+           document.getElementById("question-screen").style.display = "block";
+        }
+        function selectCategory(category) {
+            var nom = document.getElementById("player-name").value;
+            if (category === 'A') {
+                window.location.href = 'Esports.html?nom=' + encodeURIComponent(nom);
+            } else if (category === 'B') {
+                window.location.href = 'Menjar.html';
+            }
+        }
+
+    </script>
+</body>
+</html>
