@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="question-container">
+        <h1 id="player-name"></h1>
+        <h1 id="question"></h1>
+        <div id="options"></div> <!-- Aquí se mostrarán las opciones de respuesta -->
+        <div id="timer"></div>
+        <div id="resultado"></div>
+        
+    </div>
+
+    <div id="result-screen">
+        <h1>Resultats</h1>
+        <p id="score"></p>
+        <button class="button" onclick="restartGame()">Tornar a jugar</button>
+        <button class="button" onclick="endGame()">Sortir</button>
+    </div>
+    <script>
+        var playerName;
+        var currentQuestionIndex = 0;
+        var score = 0;
+        var timer;
+        var timeLimit = 10; // Límit de temps en segons per respondre a cada pregunta
+
+        // Array de preguntes deportes
+        var questions = [
+            {
+                question: "Quin dels següents plats és típic de la gastronomia mexicana?",
+                options: ["Sushi","Tacos", "Pizza", "Espaguetis"],
+                answer: "Tacos"
+            },
+            {
+                question: "Quin dels següents ingredients NO s'utilitza sovint en la preparació de la salsa pesto?",
+                options: ["Alfàbrega", "Pinyons", "Formatge cheddar", "Oli d'oliva"],
+                answer: "Formatge cheddar"
+            },
+            {
+                question: "Quin tipus de carn s'utilitza tradicionalment per fer el plat de carn a la brasa?",
+                options: ["Vedella", "Pollastre", "Xai", "Porc"],
+                answer: "Vedella"
+            },
+
+            {
+                question: "Quin dels següents és un plat típic de la cuina japonesa?",
+                options: ["Paella", "Sushi", "Currí", "Truita de patates"],
+                answer: "Sushi"
+            },
+            {
+                question: "Quin dels següents formatges és originari de França?",
+                options: ["Cheddar", "Cheddar", "Manxego", "Brie"],
+                answer: "Brie"
+            },
+
+            {
+                question: "Quin dels següents ingredients NO es troba típicament en un plat de paella?",
+                options: ["Pollastre", "Gambes", "Pinya", "Pebró"],
+                answer: "Pinya"
+            },
+            {
+                question: "Quin tipus de formatge s'utilitza tradicionalment a la pizza Margarita?",
+                options: ["Parmesà", "Gouda", "Cheddar", "Mozzarella"],
+                answer: "Mozzarella"
+            },
+            {
+                question: "Quin dels següents postres és típicament francès?",
+                options: ["Tiramisú", "Flan", "Crema catalana", "Crème brûlée"],
+                answer: "Crème brûlée"
+            },
+            {
+                question: "Quina de les següents fruites és coneguda per ser una font rica de vitamina C?",
+                options: ["Plàtan", "Poma", "Síndria", "Taronja"],
+                answer: "Taronja"
+            }
+        ];    
+// Función para mostrar una pregunta
+function displayQuestion() {
+            var currentQuestion = questions[currentQuestionIndex];
+            document.getElementById("question").textContent = currentQuestion.question;
+            var optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = ""; // Limpiar el contenedor de opciones antes de agregar las nuevas
+            currentQuestion.options.forEach(function(option) {
+                var optionButton = document.createElement("button");
+                optionButton.textContent = option;
+                optionButton.className = "option";
+                optionButton.onclick = function() {
+                    checkAnswer(option);
+                };
+                optionsContainer.appendChild(optionButton);
+            });
+            startTimer();
+        }
+
+        // Función para verificar la respuesta seleccionada
+        function checkAnswer(selectedOption) {
+            clearInterval(timer);
+            var correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // Función para iniciar el temporizador
+        function startTimer() {
+            var timeLeft = timeLimit;
+            updateTimerDisplay(timeLeft);
+            timer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.length) {
+                        displayQuestion();
+                    } else {
+                        showResult();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Función para actualizar la visualización del temporizador
+        function updateTimerDisplay(timeLeft) {
+            document.getElementById("timer").textContent = "Temps restant: " + timeLeft + " segons";
+        }
+
+        // Función para mostrar el resultado final
+        function showResult() {
+            document.getElementById("result-screen").style.display = "block";
+            document.getElementById("score").textContent = "Puntuació: " + score + "/" + questions.length;
+        }
+
+        // Función para reiniciar el juego
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("result-screen").style.display = "none";
+            document.getElementById("question-container").style.display = "block";
+            displayQuestion();
+        }
+
+        // Función para finalizar el juego y volver a la página principal
+        function endGame() {
+            window.location.href = "Princi.html";
+        }
+
+        // Ejecutar automáticamente la función displayQuestion al cargar el documento
+        displayQuestion();
+
+        // Función para obtener el nombre del jugador de la URL
+        function obtenerNombreJugador() {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('nom');
+        }
+
+        // Mostrar el nombre del jugador en la página
+        var playerName = obtenerNombreJugador();
+        if (playerName) {
+            document.getElementById('player-name').textContent = playerName;
+        }
+    </script>
+</body>
+</html>
